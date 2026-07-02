@@ -7,12 +7,11 @@ import Profile from './components/Profile';
 import GamePlay from './components/GamePlay';
 import Statistics from './components/Statistics';
 import Achievements from './components/Achievements';
-import { GameProvider, useGame } from './context/GameContext';
+import { GameProvider } from './context/GameContext'; // Hapus import useGame
 
 const AppContent: React.FC = () => {
   const [activePage, setActivePage] = useState('home');
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
-  // Hapus state yang tidak digunakan: state dari useGame tidak dipakai di sini
 
   const games = [
     { id: 'caklontong', title: 'Cak Lontong', icon: '🧩', api: 'https://api-xemoz-official.my.id/api/game/caklontong.php' },
