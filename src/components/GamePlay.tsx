@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useGame } from '../context/GameContext';
 import './GamePlay.css';
 
@@ -22,11 +22,8 @@ const GamePlay: React.FC<GamePlayProps> = ({ gameId, gameData, onBack }) => {
   const [loading, setLoading] = useState(true);
   const { dispatch } = useGame();
 
-  useEffect(() => {
-    fetchQuestion();
-  }, [gameId]);
-
-  const fetchQuestion = async () => {
+  // Gunakan useCallback untuk fetchQuestion
+  const fetchQuestion = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(gameData.api);
@@ -39,7 +36,11 @@ const GamePlay: React.FC<GamePlayProps> = ({ gameId, gameData, onBack }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [gameData.api]); // Tambahkan dependency gameData.api
+
+  useEffect(() => {
+    fetchQuestion();
+  }, [fetchQuestion]); // Dependency sekarang fetchQuestion
 
   const handleSubmit = () => {
     if (!answer.trim()) return;
@@ -53,12 +54,15 @@ const GamePlay: React.FC<GamePlayProps> = ({ gameId, gameData, onBack }) => {
       setFeedback('✅ Benar! +' + points + ' poin');
       dispatch({ type: 'ADD_POINTS', payload: points });
       dispatch({ type: 'INCREMENT_PLAYS' });
+      // Update stats
+      dispatch({ type: 'UPDATE_STATS', payload: { gameId, correct: true } });
       
       setTimeout(() => {
         fetchQuestion();
       }, 1500);
     } else {
       setFeedback('❌ Coba lagi!');
+      dispatch({ type: 'UPDATE_STATS', payload: { gameId, correct: false } });
       if (attempts >= 2) {
         setFeedback(`💡 Jawaban: ${question.jawaban}`);
         setTimeout(() => {
