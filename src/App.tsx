@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -12,7 +12,7 @@ import { GameProvider, useGame } from './context/GameContext';
 const AppContent: React.FC = () => {
   const [activePage, setActivePage] = useState('home');
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
-  const { state } = useGame();
+  // Hapus state yang tidak digunakan: state dari useGame tidak dipakai di sini
 
   const games = [
     { id: 'caklontong', title: 'Cak Lontong', icon: '🧩', api: 'https://api-xemoz-official.my.id/api/game/caklontong.php' },
@@ -43,8 +43,8 @@ const AppContent: React.FC = () => {
             <>
               <div className="trending-section">
                 <div className="section-header">
-                  <h2>Trending Sekarang</h2>
-                  <span className="live-badge">LIVE</span>
+                  <h2>🔥 Trending Sekarang</h2>
+                  <span className="live-badge">● LIVE</span>
                 </div>
                 <div className="games-grid">
                   {games.map((game, index) => (
@@ -57,7 +57,6 @@ const AppContent: React.FC = () => {
                   ))}
                 </div>
               </div>
-              <Profile />
             </>
           )}
           {activePage === 'play' && selectedGame && (
