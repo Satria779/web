@@ -1,18 +1,138 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#1a1a2e" />
-    <meta
-      name="description"
-      content="Game Asah Otak - Kumpulan game tebak-tebakan dan asah otak"
-    />
-    <title>Game Asah Otak</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔥 Raden X AJAY Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a0e; color: #ededee; font-family: 'Courier New', monospace; min-height: 100vh; padding: 20px; }
+    .card { background: #111115; border: 1px solid #2a2a35; border-radius: 24px; padding: 24px; max-width: 700px; margin: auto; }
+    .card h1 { color: #ef4444; text-align:center; font-size:1.5rem; }
+    .card .sub { text-align:center; color:#a1a1aa; font-size:0.75rem; margin-bottom:16px; }
+    label { display:block; margin-top:12px; margin-bottom:4px; color:#a1a1aa; font-size:0.75rem; }
+    input, select { width:100%; padding:10px 14px; background:#1a1a20; border:1px solid #2a2a35; border-radius:12px; color:white; font-size:0.9rem; }
+    input:focus, select:focus { outline:none; border-color:#ef4444; }
+    .btn { width:100%; padding:14px; margin-top:16px; background:#ef4444; border:none; border-radius:30px; color:white; font-weight:700; font-size:1rem; cursor:pointer; }
+    .btn:hover { background:#dc2626; }
+    .btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .log-area { margin-top:16px; background:#0a0a0e; border-radius:14px; padding:12px; max-height:400px; overflow-y:auto; font-size:0.7rem; border:1px solid #1a1a20; white-space:pre-wrap; }
+    .log-area .success { color:#4ade80; }
+    .log-area .error { color:#ef4444; }
+    .log-area .info { color:#60a5fa; }
+    .log-area .rare { color:#f59e0b; }
+    .log-area .premium { color:#a855f7; }
+    .stats { display:flex; gap:16px; justify-content:center; margin-top:12px; font-size:0.8rem; }
+    .stats span { background:#1a1a20; padding:6px 16px; border-radius:20px; border:1px solid #2a2a35; }
+    .row { display:flex; gap:10px; }
+    .row > * { flex:1; }
+    .footer { text-align:center; margin-top:16px; font-size:0.55rem; color:#3f3f46; }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-thumb { background:#3f3f46; border-radius:10px; }
+    @media (max-width:600px) { .row { flex-direction:column; } }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>🔥 Satria Generator</h1>
+  <div class="sub">😈 REAL API — Generate Guest Account Free Fire</div>
+
+  <label>🎮 Name Prefix</label>
+  <input type="text" id="namePrefix" value="Raden">
+
+  <label>🔑 Password Prefix</label>
+  <input type="text" id="passPrefix" value="kipas">
+
+  <div class="row">
+    <div>
+      <label>⚡ Jumlah Generate (max 10)</label>
+      <input type="number" id="count" value="3" min="1" max="10">
+    </div>
+  </div>
+
+  <button class="btn" id="startBtn">🚀 GENERATE GUEST</button>
+
+  <div class="stats">
+    <span id="statTotal">✅ 0</span>
+    <span id="statRare">⭐ 0</span>
+    <span id="statPremium">💎 0</span>
+  </div>
+
+  <div class="log-area" id="logArea">⚡ Siap meledak, Bos...</div>
+  <div class="footer">🔥 Raden Generator — No Filter, No Limit</div>
+</div>
+
+<script>
+// ============================================================
+// FRONTEND — PAKE VERCEL BACKEND
+// ============================================================
+const namePrefix = document.getElementById('namePrefix');
+const passPrefix = document.getElementById('passPrefix');
+const countInput = document.getElementById('count');
+const startBtn = document.getElementById('startBtn');
+const logArea = document.getElementById('logArea');
+const statTotal = document.getElementById('statTotal');
+const statRare = document.getElementById('statRare');
+const statPremium = document.getElementById('statPremium');
+
+let totalGenerated = 0, totalRare = 0, totalPremium = 0;
+
+function log(msg, type = 'info') {
+  const line = document.createElement('div');
+  line.className = type;
+  line.textContent = '['+new Date().toLocaleTimeString()+'] '+msg;
+  logArea.appendChild(line);
+  logArea.scrollTop = logArea.scrollHeight;
+}
+
+async function generateAccounts() {
+  const count = Math.min(parseInt(countInput.value)||3, 10);
+  const prefix = namePrefix.value.trim()||'Raden';
+  const passPref = passPrefix.value.trim()||'kipas';
+
+  const res = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prefix, passPrefix: passPref, count })
+  });
+  const result = await res.json();
+  if (result.status !== 'success') throw new Error(result.message || 'Gagal generate');
+  return result.data;
+}
+
+async function startGeneration() {
+  startBtn.disabled = true;
+  startBtn.textContent = '⏳ GENERATING...';
+  logArea.innerHTML = '';
+  totalGenerated = 0; totalRare = 0; totalPremium = 0;
+  log('🔥 Memulai generasi REAL...', 'info');
+
+  try {
+    const accounts = await generateAccounts();
+    for (const acc of accounts) {
+      const emoji = acc.accountType === 'premium' ? '💎' : acc.accountType === 'rare' ? '⭐' : '✅';
+      const label = acc.accountType.toUpperCase();
+      const type = acc.accountType === 'premium' ? 'premium' : acc.accountType === 'rare' ? 'rare' : 'success';
+      log(emoji+' | '+acc.name+' | UID: '+acc.uid+' | ID: '+acc.accountId+' | '+label+' (score: '+acc.rarityScore+')', type);
+      if (acc.accountType === 'rare') totalRare++;
+      if (acc.accountType === 'premium') totalPremium++;
+      totalGenerated++;
+      statTotal.textContent = '✅ '+totalGenerated;
+      statRare.textContent = '⭐ '+totalRare;
+      statPremium.textContent = '💎 '+totalPremium;
+    }
+    log('🎉 Selesai! Total: '+totalGenerated+' (Rare: '+totalRare+', Premium: '+totalPremium+')', 'success');
+  } catch (e) {
+    log('❌ Error: '+e.message, 'error');
+  }
+
+  startBtn.disabled = false;
+  startBtn.textContent = '🚀 GENERATE GUEST';
+}
+
+startBtn.addEventListener('click', startGeneration);
+</script>
+</body>
 </html>
