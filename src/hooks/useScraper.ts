@@ -1,4 +1,3 @@
-// src/hooks/useScraper.ts
 import { useState } from 'react';
 import { scrapeWebsite } from '../api/scraper';
 import { ScrapeResult } from '../types/scraper';
@@ -24,17 +23,20 @@ export const useScraper = () => {
       setResult(data);
       setProgress(100);
       
-      // Save to history
-      const history = JSON.parse(localStorage.getItem('scrapeHistory') || '[]');
-      const newHistory = [{ id: Date.now().toString(), ...data }, ...history];
-      localStorage.setItem('scrapeHistory', JSON.stringify(newHistory.slice(0, 50)));
+      try {
+        const history = JSON.parse(localStorage.getItem('scrapeHistory') || '[]');
+        const newHistory = [{ id: Date.now().toString(), ...data }, ...history];
+        localStorage.setItem('scrapeHistory', JSON.stringify(newHistory.slice(0, 50)));
+      } catch (storageError) {
+        console.warn('Failed to save to history:', storageError);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      setProgress(0);
     } finally {
       clearInterval(interval);
       setLoading(false);
     }
   };
 
-  return { loading, progress, result, error, scrape };
-};
+  return { loading, progress, result, error, scrape };ing
