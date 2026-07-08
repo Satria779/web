@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Copy, Download, ExternalLink, FileJson, FileText, Code, Check, Link2, Image } from 'lucide-react';
+import { Copy, ExternalLink, FileJson, FileText, Code, Check, Link2, Image } from 'lucide-react';
 import { useState } from 'react';
 import { ScrapeResult } from '../types/scraper';
 import { copyToClipboard } from '../utils/clipboard';
