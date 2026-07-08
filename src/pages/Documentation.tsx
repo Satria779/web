@@ -1,4 +1,3 @@
-// src/pages/Documentation.tsx
 import { motion } from 'framer-motion';
 import { Code, Link, Zap, Shield } from 'lucide-react';
 
@@ -31,7 +30,7 @@ const Documentation = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="pt-24 pb-16 px-4"
+      className="pt-24 pb-16 px-4 min-h-screen"
     >
       <div className="max-w-4xl mx-auto">
         <motion.h1
@@ -58,7 +57,7 @@ const Documentation = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + i * 0.1 }}
-              className="glass-card rounded-2xl p-6"
+              className="glass-card rounded-2xl p-6 bg-white/40 dark:bg-black/40"
             >
               <feature.icon className="w-8 h-8 text-indigo-500 mb-4" />
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
@@ -75,26 +74,45 @@ const Documentation = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="glass-card rounded-2xl p-8"
+          className="glass-card rounded-2xl p-8 bg-white/40 dark:bg-black/40"
         >
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             API Endpoint
           </h2>
-          <div className="bg-gray-900/10 dark:bg-gray-900/30 rounded-xl p-4 mb-4">
-            <code className="text-sm text-gray-800 dark:text-gray-200">
-              GET https://api.lexcode.biz.id/api/tools/scrape-web?url={{URL}}
+          <div className="bg-gray-900/10 dark:bg-gray-900/30 rounded-xl p-4 mb-4 overflow-x-auto">
+            <code className="text-sm text-gray-800 dark:text-gray-200 break-all">
+              GET https://api.lexcode.biz.id/api/tools/scrape-web?url={'{URL}'}
             </code>
           </div>
           <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
             Parameters
           </h3>
           <div className="space-y-2">
-            <div className="flex items-start space-x-4">
+            <div className="flex flex-wrap items-start gap-2">
               <span className="font-mono text-sm text-indigo-500">url</span>
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 Required. The URL to scrape (must be URL-encoded)
               </span>
             </div>
+          </div>
+          <div className="mt-4 p-4 bg-gray-900/10 dark:bg-gray-900/30 rounded-xl">
+            <h4 className="font-semibold text-gray-900 dark:text-white mb-2 text-sm">
+              Example Response
+            </h4>
+            <pre className="text-xs text-gray-800 dark:text-gray-200 overflow-x-auto">
+{`{
+  "status": "success",
+  "data": {
+    "title": "Example Domain",
+    "description": "This domain is for use in illustrative examples",
+    "url": "https://example.com",
+    "status": 200,
+    "htmlLength": 1256,
+    "links": [...],
+    "images": [...]
+  }
+}`}
+            </pre>
           </div>
         </motion.div>
       </div>
