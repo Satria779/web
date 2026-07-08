@@ -1,4 +1,3 @@
-// src/components/ResultCard.tsx
 import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Download, ExternalLink, FileJson, FileText, Code, Check, Link2, Image } from 'lucide-react';
 import { useState } from 'react';
@@ -15,18 +14,32 @@ const ResultCard = ({ result }: ResultCardProps) => {
   const [copied, setCopied] = useState<string | null>(null);
 
   const handleCopy = async (text: string, type: string) => {
-    const success = await copyToClipboard(text);
-    if (success) {
-      setCopied(type);
-      setTimeout(() => setCopied(null), 2000);
+    try {
+      const success = await copyToClipboard(text);
+      if (success) {
+        setCopied(type);
+        setTimeout(() => setCopied(null), 2000);
+      }
+    } catch (error) {
+      console.error('Copy failed:', error);
     }
   };
 
   const handleDownload = (content: string, filename: string, type: string) => {
-    downloadFile(content, filename, type);
+    try {
+      downloadFile(content, filename, type);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
   };
 
-  const getJsonString = () => JSON.stringify(result.json, null, 2);
+  const getJsonString = () => {
+    try {
+      return JSON.stringify(result.json, null, 2);
+    } catch {
+      return JSON.stringify(result, null, 2);
+    }
+  };
 
   return (
     <motion.div
@@ -41,7 +54,7 @@ const ResultCard = ({ result }: ResultCardProps) => {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               {result.title}
             </h2>
-            <div className="flex items-center space-x-4 mt-2">
+            <div className="flex flex-wrap items-center gap-4 mt-2">
               <a
                 href={result.url}
                 target="_blank"
@@ -49,7 +62,7 @@ const ResultCard = ({ result }: ResultCardProps) => {
                 className="text-indigo-500 hover:text-indigo-600 flex items-center space-x-1 text-sm"
               >
                 <ExternalLink className="w-4 h-4" />
-                <span>{result.url}</span>
+                <span className="truncate max-w-xs">{result.url}</span>
               </a>
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                 result.status === 200
@@ -110,41 +123,45 @@ const ResultCard = ({ result }: ResultCardProps) => {
         </div>
 
         <div className="space-y-6">
-          <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center space-x-2">
-              <Image className="w-4 h-4" />
-              <span>Images ({result.images.length})</span>
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {result.images.slice(0, 10).map((img, i) => (
-                <img key={i} src={img} alt={`Image ${i + 1}`} className="w-20 h-20 object-cover rounded-lg" />
-              ))}
-              {result.images.length > 10 && (
-                <span className="text-sm text-gray-500 dark:text-gray-400 self-center">
-                  +{result.images.length - 10} more
-                </span>
-              )}
+          {result.images.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center space-x-2">
+                <Image className="w-4 h-4" />
+                <span>Images ({result.images.length})</span>
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {result.images.slice(0, 10).map((img, i) => (
+                  <img key={i} src={img} alt={`Image ${i + 1}`} className="w-20 h-20 object-cover rounded-lg" />
+                ))}
+                {result.images.length > 10 && (
+                  <span className="text-sm text-gray-500 dark:text-gray-400 self-center">
+                    +{result.images.length - 10} more
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-              Extracted Links ({result.links.length})
-            </h3>
-            <div className="max-h-40 overflow-y-auto space-y-1">
-              {result.links.slice(0, 20).map((link, i) => (
-                <a
-                  key={i}
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-sm text-indigo-500 hover:text-indigo-600 truncate"
-                >
-                  {link}
-                </a>
-              ))}
+          {result.links.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                Extracted Links ({result.links.length})
+              </h3>
+              <div className="max-h-40 overflow-y-auto space-y-1">
+                {result.links.slice(0, 20).map((link, i) => (
+                  <a
+                    key={i}
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-sm text-indigo-500 hover:text-indigo-600 truncate"
+                  >
+                    {link}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {Object.keys(result.openGraph).length > 0 && (
             <div>
