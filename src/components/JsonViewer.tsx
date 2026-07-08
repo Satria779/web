@@ -1,4 +1,3 @@
-// src/components/JsonViewer.tsx
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronRight } from 'lucide-react';
@@ -10,7 +9,7 @@ interface JsonViewerProps {
 const JsonViewer = ({ data }: JsonViewerProps) => {
   const [expanded, setExpanded] = useState(true);
 
-  const renderValue = (value: any, key: string): React.ReactNode => {
+  const renderValue = (value: any, _key: string): React.ReactNode => {
     if (value === null) {
       return <span className="text-gray-400">null</span>;
     }
