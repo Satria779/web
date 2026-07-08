@@ -1,4 +1,3 @@
-// src/components/ScrapeForm.tsx
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Loader2, AlertCircle } from 'lucide-react';
@@ -8,10 +7,36 @@ import ResultCard from './ResultCard';
 const ScrapeForm = () => {
   const [url, setUrl] = useState('');
   const { loading, progress, result, error, scrape } = useScraper();
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const validateUrl = (input: string): string | null => {
+    if (!input.trim()) {
+      return 'Please enter a URL';
+    }
+    
+    let urlToCheck = input.trim();
+    if (!urlToCheck.startsWith('http://') && !urlToCheck.startsWith('https://')) {
+      urlToCheck = 'https://' + urlToCheck;
+    }
+    
+    try {
+      new URL(urlToCheck);
+      return null;
+    } catch {
+      return 'Please enter a valid URL';
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!url.trim()) return;
+    
+    const error = validateUrl(url);
+    if (error) {
+      setValidationError(error);
+      return;
+    }
+    
+    setValidationError(null);
     
     let finalUrl = url.trim();
     if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
@@ -32,11 +57,16 @@ const ScrapeForm = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
             <input
-              type="url"
+              type="text"
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={(e) => {
+                setUrl(e.target.value);
+                if (validationError) setValidationError(null);
+              }}
               placeholder="https://example.com"
-              className="w-full px-6 py-4 pr-32 rounded-2xl bg-white/50 dark:bg-black/50 border border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+              className={`w-full px-6 py-4 pr-32 rounded-2xl bg-white/50 dark:bg-black/50 border ${
+                validationError ? 'border-red-500 focus:border-red-500' : 'border-gray-200 dark:border-gray-700 focus:border-indigo-500'
+              } focus:ring-4 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500`}
               disabled={loading}
             />
             <motion.button
@@ -44,18 +74,32 @@ const ScrapeForm = () => {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading || !url.trim()}
-              className="absolute right-2 top-2 px-6 py-2 rounded-xl gradient-bg text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg"
+              className="absolute right-2 top-2 px-6 py-2 rounded-xl gradient-bg text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg flex items-center space-x-2"
             >
               {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Scraping</span>
+                </>
               ) : (
-                <span className="flex items-center space-x-2">
+                <>
                   <Search className="w-4 h-4" />
                   <span>Scrape</span>
-                </span>
+                </>
               )}
             </motion.button>
           </div>
+
+          {validationError && (
+            <motion.p
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-sm text-red-500 flex items-center space-x-1"
+            >
+              <AlertCircle className="w-4 h-4" />
+              <span>{validationError}</span>
+            </motion.p>
+          )}
 
           {loading && (
             <motion.div
