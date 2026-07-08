@@ -1,4 +1,3 @@
-// src/components/History.tsx
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Trash2, ExternalLink, Calendar, X } from 'lucide-react';
@@ -15,19 +14,32 @@ const History = () => {
   }, []);
 
   const loadHistory = () => {
-    const data = JSON.parse(localStorage.getItem('scrapeHistory') || '[]');
-    setHistory(data);
+    try {
+      const data = JSON.parse(localStorage.getItem('scrapeHistory') || '[]');
+      setHistory(data);
+    } catch (error) {
+      console.warn('Failed to load history:', error);
+      setHistory([]);
+    }
   };
 
   const deleteItem = (id: string) => {
-    const newHistory = history.filter(item => item.id !== id);
-    localStorage.setItem('scrapeHistory', JSON.stringify(newHistory));
-    setHistory(newHistory);
+    try {
+      const newHistory = history.filter(item => item.id !== id);
+      localStorage.setItem('scrapeHistory', JSON.stringify(newHistory));
+      setHistory(newHistory);
+    } catch (error) {
+      console.warn('Failed to delete history item:', error);
+    }
   };
 
   const clearAll = () => {
-    localStorage.removeItem('scrapeHistory');
-    setHistory([]);
+    try {
+      localStorage.removeItem('scrapeHistory');
+      setHistory([]);
+    } catch (error) {
+      console.warn('Failed to clear history:', error);
+    }
   };
 
   const filtered = history.filter(item =>
@@ -36,7 +48,7 @@ const History = () => {
   );
 
   return (
-    <div className="pt-24 pb-16 px-4 max-w-6xl mx-auto">
+    <div className="pt-24 pb-16 px-4 max-w-6xl mx-auto min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -56,7 +68,7 @@ const History = () => {
             placeholder="Search history..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-2xl glass border border-white/20 dark:border-white/10 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none"
+            className="w-full pl-12 pr-4 py-3 rounded-2xl glass border border-white/20 dark:border-white/10 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
           />
         </div>
         {history.length > 0 && (
@@ -92,14 +104,14 @@ const History = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -20 }}
               layout
-              className="glass-card rounded-2xl p-6 hover:shadow-2xl transition-shadow"
+              className="glass-card rounded-2xl p-6 hover:shadow-2xl transition-shadow bg-white/40 dark:bg-black/40"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-gray-900 dark:text-white truncate">
                     {item.title}
                   </h3>
-                  <div className="flex items-center space-x-4 mt-1">
+                  <div className="flex flex-wrap items-center gap-4 mt-1">
                     <a
                       href={item.url}
                       target="_blank"
@@ -107,7 +119,7 @@ const History = () => {
                       className="text-sm text-indigo-500 hover:text-indigo-600 flex items-center space-x-1"
                     >
                       <ExternalLink className="w-4 h-4" />
-                      <span className="truncate">{item.url}</span>
+                      <span className="truncate max-w-xs">{item.url}</span>
                     </a>
                     <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center space-x-1">
                       <Calendar className="w-4 h-4" />
