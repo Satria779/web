@@ -189,9 +189,21 @@ const ResultCard = ({ result }: ResultCardProps) => {
 
         <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
           {[
-            { label: 'Download JSON', action: () => handleDownload(getJsonString(), 'scrape-result.json', 'application/json'), icon: FileJson },
-            { label: 'Download TXT', action: () => handleDownload(result.textContent, 'scrape-result.txt', 'text/plain'), icon: FileText },
-            { label: 'Download HTML', action: () => handleDownload(result.textContent, 'scrape-result.html', 'text/html'), icon: Code },
+            { 
+              label: 'Download JSON', 
+              action: () => handleDownload(getJsonString(), 'scrape-result.json', 'application/json'), 
+              icon: FileJson 
+            },
+            { 
+              label: 'Download TXT', 
+              action: () => handleDownload(result.textContent, 'scrape-result.txt', 'text/plain'), 
+              icon: FileText 
+            },
+            { 
+              label: 'Download HTML', 
+              action: () => handleDownload(result.textContent, 'scrape-result.html', 'text/html'), 
+              icon: Code 
+            },
           ].map(({ label, action, icon: Icon }) => (
             <motion.button
               key={label}
@@ -200,7 +212,7 @@ const ResultCard = ({ result }: ResultCardProps) => {
               onClick={action}
               className="flex items-center space-x-2 px-4 py-2 rounded-xl gradient-bg text-white font-medium hover:shadow-lg transition-all"
             >
-              <Download className="w-4 h-4" />
+              <Icon className="w-4 h-4" />
               <span>{label}</span>
             </motion.button>
           ))}
