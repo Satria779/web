@@ -1,3 +1,4 @@
+// src/hooks/useScraper.ts - Fixed with better error handling
 import { useState } from 'react';
 import { scrapeWebsite } from '../api/scraper';
 import { ScrapeResult } from '../types/scraper';
@@ -39,4 +40,5 @@ export const useScraper = () => {
     }
   };
 
-  return { loading, progress, result, error, scrape };ing
+  return { loading, progress, result, error, scrape };
+};
