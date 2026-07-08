@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Copy, Download, ExternalLink, FileJson, FileText, Code, Check, Link2, Image } from 'lucide-react';
 import { useState } from 'react';
 import { ScrapeResult } from '../types/scraper';
